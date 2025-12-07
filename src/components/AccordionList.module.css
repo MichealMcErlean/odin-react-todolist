@@ -51,14 +51,16 @@
   font-weight: bold;
 }
 
-.completeButton {
+.todobutton {
   all:unset;
   background-color: aliceblue;
   font-size: 3.6rem;
   border-left: 1px solid darkcyan;
+  margin: 10px;
+  padding: 5px;
 }
 
-.completeButton:active {
+.todobutton:active {
   background-color: darkcyan;
   color: white;
 }

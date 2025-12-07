@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import './App.css'
 import { ToDo, Project } from './scripts/todo'
 import AccordionList from './components/AccordionList';
@@ -6,8 +6,13 @@ import AccordionList from './components/AccordionList';
 function App() {
 
   const [projectList, setProjectList] = useState([new Project('General')]);
-  const [displayList, setDisplayList] = useState([]);
-  const [activeProject, setActiveProject] = useState(projectList[0]);
+  // const [displayList, setDisplayList] = useState([]);
+  // const [activeProject, setActiveProject] = useState(projectList[0]);
+  const [activeProjectId, setActiveProjectId] = useState(projectList[0].id);
+
+  const activeProject = useMemo(() => {
+    return projectList.find(p => p.id === activeProjectId)||null;
+  }, [projectList, activeProjectId]);
 
   useEffect(() => {
     let workingProjects = [...projectList];
@@ -21,19 +26,56 @@ function App() {
     exampleProject.addToDo(new ToDo('walking', 'to the river and back', new Date(), 'low'));
     setProjectList(prev => [...prev, exampleProject]);
 
-    setActiveProject(defaultProject);
-    setDisplayList(defaultProject.list)
+    setActiveProjectId(defaultProject.id);
+    // setDisplayList(defaultProject.list)
   }, [])
 
   function handleProjectChange(e, project) {
-    setActiveProject(project);
-    setDisplayList(project.list);
+    setActiveProjectId(project.id);
+    // setDisplayList(project.list);
   }
 
   function handleDeleteProject(e, project) {
     let newProjectList = projectList.filter(x => x.id != project.id);
     setProjectList([...newProjectList]);
   }
+
+  const handleDeleteTodo = (e, todo) => {
+    setProjectList(prevList => {
+      const updatedList = prevList.map(project => {
+        if (project.list.some(td => td.id === todo.id)) {
+          const newList = project.list.filter(td => td.id !== todo.id);
+          return { ...project, list: newList };
+        }
+        return project;
+      });
+      return updatedList;
+    });
+  };
+
+  const handleCompleteTodo = (e, todo) => {
+    setProjectList(prevList => {
+      const updatedList = prevList.map(project => {
+        if (project.list.some(td => td.id === todo.id)) {
+          const newList = project.list.map(td => {
+            if (td.id === todo.id) {
+              return {
+                ...td,
+                isComplete: true
+              }
+            }
+            return td
+          });
+          return {
+            ...project,
+            list: newList
+          };
+        }
+        return project;
+      });
+      return updatedList;
+    });
+  } 
 
   return (
     <main>
@@ -64,13 +106,15 @@ function App() {
         </div>
       </nav>
       <article>
-        {displayList == [] ? (
+        {activeProject.list == [] ? (
           <h1>Naught but cobwebs..</h1>
         ) : (
-          displayList.map(todo => (
+          activeProject.list.map(todo => (
             <AccordionList
               key={todo.id}
               content={todo}
+              onDelete={handleDeleteTodo}
+              onComplete={handleCompleteTodo}
             />
           ))
         )}
