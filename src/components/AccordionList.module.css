@@ -1,0 +1,64 @@
+.shell {
+  background-color: aliceblue;
+  box-shadow: 5px 5px 10px black;
+  margin: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+}
+
+.spreader {
+  flex-grow: 2;
+  font-size: 3.6rem;
+  text-align: center;
+  color:green
+}
+
+.redText {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  width: 10ch;
+  text-align: center;
+}
+
+.yellowText {
+  background-color: yellow;
+  font-weight: bold;
+  border-radius: 5px;
+  width: 10ch;
+  text-align: center;
+}
+
+.greenText {
+  background-color: darkgreen;
+  color: white;
+  border-radius: 5px;
+  width: 10ch;
+  text-align: center;
+}
+
+.accordionToggle {
+  font-size: 3.6rem;
+  font-weight: bold;
+}
+
+.completeButton {
+  all:unset;
+  background-color: aliceblue;
+  font-size: 3.6rem;
+  border-left: 1px solid darkcyan;
+}
+
+.completeButton:active {
+  background-color: darkcyan;
+  color: white;
+}

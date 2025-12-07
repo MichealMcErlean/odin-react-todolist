@@ -1,0 +1,73 @@
+@font-face {
+  font-family: 'bad_scriptregular';
+  src: url('./assets/badscript-regular-webfont.woff2') format('woff2'),
+    url('./assets/badscript-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+main * {
+  padding: 12px;
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+  font-size: 1.8rem;
+  display: grid;
+  grid-template-areas:
+    'aside article'
+    'footer footer';
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr min-content;
+  font-family: 'bad_scriptregular';
+}
+
+nav {
+  background-color: aliceblue;
+  color: black;
+  grid-area: aside;
+  padding: 10px;
+  box-shadow: 5px 5px 10px black;
+  z-index: 1;
+}
+
+nav button {
+  border: none;
+  background: transparent;
+  font-family: 'bad_scriptregular';
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+#projectBox {
+  box-shadow: inset 5px 5px rgb(201, 228, 252);
+  outline: 2px solid rgb(201, 228, 252);
+  display: grid;
+  grid-template-columns: 1fr min-content;
+}
+
+.active-button {
+  text-decoration: underline solid darkcyan;
+  text-decoration-thickness: 3px;
+  font-size: 2.4rem;
+}
+
+.normal-button {
+  opacity: 0.5;
+}
+
+article {
+  background-image: linear-gradient(darkcyan, cadetblue);
+  grid-area: article;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+footer {
+  background-color: #222222;
+  color:antiquewhite;
+  padding: 10px;
+  grid-area: footer;
+}
