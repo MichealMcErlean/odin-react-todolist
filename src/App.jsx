@@ -1,13 +1,19 @@
 import { useState, useEffect, useMemo } from 'react'
 import './App.css'
-import { ToDo, Project } from './scripts/todo'
+import { ToDo, Project, restoreProjectList, createDefaultProjectList } from './scripts/todo'
 import AccordionList from './components/AccordionList';
 import AddToDoModal from './components/AddToDoModal';
-
+import useLocalStorageState from './components/useLocalStorageState';
 
 function App() {
 
-  const [projectList, setProjectList] = useState([new Project('General')]);
+ 
+
+  const [projectList, setProjectList] = useLocalStorageState(
+    'projectlist',
+    createDefaultProjectList,
+    restoreProjectList
+  )
   const [activeProjectId, setActiveProjectId] = useState(projectList[0].id);
   const [isAddTodoModalOpen, setIsAddTodoModalOpen] = useState(false);
 
@@ -15,20 +21,20 @@ function App() {
     return projectList.find(p => p.id === activeProjectId)||null;
   }, [projectList, activeProjectId]);
 
-  useEffect(() => {
-    let workingProjects = [...projectList];
-    let defaultProject = workingProjects[0];
-    defaultProject.addToDo(new ToDo('testing', 'just a test', new Date(), 'medium'));
-    defaultProject.addToDo(new ToDo('another test', 'gotta do them', new Date(), 'high'));
-    let cleanWorkingProjects = workingProjects.filter(project => project.id != defaultProject.id)
-    setProjectList([defaultProject, ...cleanWorkingProjects]);
+  // useEffect(() => {
+  //   let workingProjects = [...projectList];
+  //   let defaultProject = workingProjects[0];
+  //   defaultProject.addToDo(new ToDo('testing', 'just a test', new Date(), 'medium'));
+  //   defaultProject.addToDo(new ToDo('another test', 'gotta do them', new Date(), 'high'));
+  //   let cleanWorkingProjects = workingProjects.filter(project => project.id != defaultProject.id)
+  //   setProjectList([defaultProject, ...cleanWorkingProjects]);
 
-    let exampleProject = new Project('Exercise');
-    exampleProject.addToDo(new ToDo('walking', 'to the river and back', new Date(), 'low'));
-    setProjectList(prev => [...prev, exampleProject]);
+  //   let exampleProject = new Project('Exercise');
+  //   exampleProject.addToDo(new ToDo('walking', 'to the river and back', new Date(), 'low'));
+  //   setProjectList(prev => [...prev, exampleProject]);
 
-    setActiveProjectId(defaultProject.id);
-  }, [])
+  //   setActiveProjectId(defaultProject.id);
+  // }, [])
 
   function handleProjectChange(e, project) {
     setActiveProjectId(project.id);

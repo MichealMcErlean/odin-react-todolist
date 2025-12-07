@@ -51,9 +51,34 @@ export class Project {
   }
 }
 
+ export const createDefaultProjectList = () => {
+    const generalProject = new Project('General');
+
+    const defaultTodo = new ToDo(
+      "Welcome to your To-Do List",
+      "This is a default task. You can add more tasks or projects!",
+      new Date(),
+      'medium'
+    );
+
+    generalProject.addToDo(defaultTodo);
+    return [generalProject];
+  }
+
 export function restoreProjectList(oldProjectList) {
+  if (!oldProjectList || !Array.isArray(oldProjectList)) {
+    console.warn("restoreProjectList received invalid data, returning default list.");
+    return createDefaultProjectList();
+  }
   const newProjectList = oldProjectList.map(projectData => {
-    const rehydratedToDos = projectData.toDoList.map(todoData => {
+
+    if (!projectData.list || !Array.isArray(projectData.list)) {
+        console.warn(`Project with ID ${projectData.id} is missing a valid toDoList.`, projectData);
+        // Skip this project or handle it as appropriate for your logic
+        return []; 
+    }
+
+    const rehydratedToDos = projectData.list.map(todoData => {
       const newToDo = new ToDo(
         todoData.title,
         todoData.details,
