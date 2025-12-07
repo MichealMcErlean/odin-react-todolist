@@ -31,6 +31,8 @@ nav {
   padding: 10px;
   box-shadow: 5px 5px 10px black;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 nav button {
@@ -56,6 +58,49 @@ nav button {
 
 .normal-button {
   opacity: 0.5;
+}
+
+.addProjectButton {
+  font-size: 3.6rem;
+  font-weight: bold;
+  display: block;
+  align-self: center;
+}
+
+.modalOpenButton {
+  border: none;
+  background-color:aliceblue;
+  border-radius: 50%;
+  font-family: 'bad_scriptregular';
+  font-size: 3.6rem;
+  display: block;
+}
+
+#addtodowrapper {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  display:grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: min-content;
+  gap: 10px;
+}
+
+form ul {
+  list-style: none;
+}
+
+form button {
+  border: none;
+  background-color: darkcyan;
+  color: white;
+  font-size: 1.8rem;
+  font-family: 'bad_scriptregular';
+  font-weight: bold;
+  border-radius: 15px;
 }
 
 article {

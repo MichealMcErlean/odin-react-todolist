@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo } from 'react'
 import './App.css'
 import { ToDo, Project } from './scripts/todo'
 import AccordionList from './components/AccordionList';
+import AddToDoModal from './components/AddToDoModal';
 
 function App() {
 
   const [projectList, setProjectList] = useState([new Project('General')]);
-  // const [displayList, setDisplayList] = useState([]);
-  // const [activeProject, setActiveProject] = useState(projectList[0]);
   const [activeProjectId, setActiveProjectId] = useState(projectList[0].id);
+  const [isAddTodoModalOpen, setIsAddTodoModalOpen] = useState(false);
 
   const activeProject = useMemo(() => {
     return projectList.find(p => p.id === activeProjectId)||null;
@@ -27,17 +27,18 @@ function App() {
     setProjectList(prev => [...prev, exampleProject]);
 
     setActiveProjectId(defaultProject.id);
-    // setDisplayList(defaultProject.list)
   }, [])
 
   function handleProjectChange(e, project) {
     setActiveProjectId(project.id);
-    // setDisplayList(project.list);
   }
 
   function handleDeleteProject(e, project) {
     let newProjectList = projectList.filter(x => x.id != project.id);
     setProjectList([...newProjectList]);
+    if (activeProjectId === project.id) {
+      setActiveProjectId(newProjectList[0].id)
+    }
   }
 
   const handleDeleteTodo = (e, todo) => {
@@ -77,8 +78,68 @@ function App() {
     });
   } 
 
+  const handleAddProject = () => {
+    let name = prompt('Name your new project?', 'New Project');
+    let newProject = new Project(name);
+    setProjectList(prev => [...prev, newProject]);
+    setActiveProjectId(prev => newProject.id);
+  }
+
+  const onAddToDo = (event) => {
+    event.stopPropagation();
+    const title = event.target.title.value;
+    const details = event.target.details.value;
+    const date = new Date(event.target.date.value);
+    const priority = event.target.priority.value;
+
+
+
+    const newToDo = new ToDo(title, details, date, priority);
+    const newList = [...activeProject.list, newToDo];
+    const newProject = {...activeProject, list: newList};
+    const newProjectList = projectList.map(project => (project.id === newProject.id ? newProject : project));
+    setProjectList(newProjectList);
+    setActiveProjectId(newProject.id);
+    closeAddTodoModal();
+  }
+
+  const openAddTodoModal = () => setIsAddTodoModalOpen(true);
+  const closeAddTodoModal = () => setIsAddTodoModalOpen(false);
+
   return (
     <main>
+      <AddToDoModal 
+        isOpen={isAddTodoModalOpen}
+        onClose={closeAddTodoModal}
+        title='Add a To-Do'
+      >
+        <form action="/" id="addToDoForm" onSubmit={onAddToDo}>
+          <label htmlFor="title">Title: </label>
+          <input type="text" name="title" id="addToDoTitle" required />
+          <label htmlFor="details">Details: </label>
+          <input type="text" name="details" id="addToDoDetails" required />
+          <label htmlFor="date">Date Due: </label>
+          <input type="date" name="date" id="addToDoDate" />
+          <fieldset>
+            <legend>Priority</legend>
+            <ul>
+              <li>
+                <input type="radio" name="priority" id="priorityHigh" value='high' />
+                <label htmlFor="priorityHigh">High</label>
+              </li>
+              <li>
+                <input type="radio" name="priority" id="priorityMedium" value='medium' defaultChecked/>
+                <label htmlFor="priorityMedium">Medium</label>
+              </li>
+              <li>
+                <input type="radio" name="priority" id="priorityLow" value='low' />
+                <label htmlFor="priorityLow">Low</label>
+              </li>
+            </ul>
+          </fieldset>
+          <button type="submit">Add To-Do</button>
+        </form>
+      </AddToDoModal>
       <nav>
         <h1>To-Do List</h1>
         <h2>Projects</h2>
@@ -104,6 +165,13 @@ function App() {
             </>
           ))}
         </div>
+        <button 
+          type="button"
+          className='addProjectButton'
+          onClick={handleAddProject}
+        >
+          +
+        </button>
       </nav>
       <article>
         {activeProject.list == [] ? (
@@ -118,6 +186,15 @@ function App() {
             />
           ))
         )}
+        <div id="addtodowrapper">
+          <button
+            type="button"
+            onClick={openAddTodoModal}
+            className='modalOpenButton'
+          >
+            +
+          </button>
+        </div>
       </article>
       <footer>
         &copy; Micheal McErlean 2025.
