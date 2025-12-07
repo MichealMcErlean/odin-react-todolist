@@ -50,3 +50,30 @@ export class Project {
     let removedElement = this.list.splice(index, 1);
   }
 }
+
+export function restoreProjectList(oldProjectList) {
+  const newProjectList = oldProjectList.map(projectData => {
+    const rehydratedToDos = projectData.toDoList.map(todoData => {
+      const newToDo = new ToDo(
+        todoData.title,
+        todoData.details,
+        new Date(todoData.dueDate),
+        todoData.priority
+      );
+      newToDo.id = todoData.id;
+      newToDo.complete = todoData.complete;
+
+      return newToDo;
+    });
+
+    const newProject = new Project(projectData.title);
+    newProject.id = projectData.id;
+
+    rehydratedToDos.forEach(todo => {
+      newProject.addToDo(todo)
+    });
+
+    return newProject;
+  });
+  return newProjectList;
+}

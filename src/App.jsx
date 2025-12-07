@@ -4,6 +4,7 @@ import { ToDo, Project } from './scripts/todo'
 import AccordionList from './components/AccordionList';
 import AddToDoModal from './components/AddToDoModal';
 
+
 function App() {
 
   const [projectList, setProjectList] = useState([new Project('General')]);
@@ -96,6 +97,7 @@ function App() {
 
     const newToDo = new ToDo(title, details, date, priority);
     const newList = [...activeProject.list, newToDo];
+    newList.sort((a, b) => a.dueDate - b.dueDate);
     const newProject = {...activeProject, list: newList};
     const newProjectList = projectList.map(project => (project.id === newProject.id ? newProject : project));
     setProjectList(newProjectList);
