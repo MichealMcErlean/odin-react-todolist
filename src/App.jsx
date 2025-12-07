@@ -21,21 +21,6 @@ function App() {
     return projectList.find(p => p.id === activeProjectId)||null;
   }, [projectList, activeProjectId]);
 
-  // useEffect(() => {
-  //   let workingProjects = [...projectList];
-  //   let defaultProject = workingProjects[0];
-  //   defaultProject.addToDo(new ToDo('testing', 'just a test', new Date(), 'medium'));
-  //   defaultProject.addToDo(new ToDo('another test', 'gotta do them', new Date(), 'high'));
-  //   let cleanWorkingProjects = workingProjects.filter(project => project.id != defaultProject.id)
-  //   setProjectList([defaultProject, ...cleanWorkingProjects]);
-
-  //   let exampleProject = new Project('Exercise');
-  //   exampleProject.addToDo(new ToDo('walking', 'to the river and back', new Date(), 'low'));
-  //   setProjectList(prev => [...prev, exampleProject]);
-
-  //   setActiveProjectId(defaultProject.id);
-  // }, [])
-
   function handleProjectChange(e, project) {
     setActiveProjectId(project.id);
   }
@@ -99,8 +84,6 @@ function App() {
     const date = new Date(event.target.date.value);
     const priority = event.target.priority.value;
 
-
-
     const newToDo = new ToDo(title, details, date, priority);
     const newList = [...activeProject.list, newToDo];
     newList.sort((a, b) => a.dueDate - b.dueDate);
@@ -113,6 +96,27 @@ function App() {
 
   const openAddTodoModal = () => setIsAddTodoModalOpen(true);
   const closeAddTodoModal = () => setIsAddTodoModalOpen(false);
+
+  const handleEditTodo = (event, todo) => {
+    event.stopPropagation();
+    const target = event.target;
+    const title = target.title.value;
+    const details = target.details.value;
+    const date = new Date(target.date.value);
+    const priority = target.priority.value;
+
+    const editedToDo = new ToDo(title, details, date, priority);
+    editedToDo.id = todo.id;
+    editedToDo.complete = todo.complete;
+
+    const newList = activeProject.list.map(td => td.id === editedToDo.id ? editedToDo : td);
+    newList.sort((a, b) => a.dueDate - b.dueDate);
+    const newProject = {...activeProject, list: newList};
+    const newProjectList = projectList.map(project => (project.id === newProject.id ? newProject : project));
+    setProjectList(newProjectList);
+    setActiveProjectId(newProject.id)
+    closeModal();
+  }
 
   return (
     <main>
@@ -191,6 +195,7 @@ function App() {
               content={todo}
               onDelete={handleDeleteTodo}
               onComplete={handleCompleteTodo}
+              onSubmit={(e) => handleEditTodo(e, todo)}
             />
           ))
         )}
